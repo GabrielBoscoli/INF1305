@@ -1,0 +1,40 @@
+original isolate cool journey flag stairs stick board home move shield neither
+
+blockchain para aposta
+
+https://ethereum.stackexchange.com/questions/65796/simple-smart-contracts-to-make-a-bet
+
+https://www.forbes.com/sites/geraldfenech/2019/01/30/blockchain-in-gambling-and-betting-are-there-real-advantages/#30731bf87c63
+
+dificuldade para definir quem ganhou a aposta
+
+talvez criar um jogo de roleta no smart contract?
+
+https://hackernoon.com/the-oracle-of-truth-where-do-blockchain-betting-projects-get-their-event-results-r44b2c99
+
+criar um smart contract para definir um consenso sobre o resultado?
+
+pode ser bom para inspiração
+ethereum improvements proposal
+https://eips.ethereum.org/erc
+
+uma ideia seria tokens de ingressos
+poderia ser transferido e impedir cambistas
+
+https://www.youtube.com/watch?v=CuWwIHa9s8o
+video da ideia de um mlk da disciplina
+
+ideias: inclusive tem uma ideia q eu ja tinha pensado de bet
+https://forum.cardano.org/t/simple-smart-contract-dapp-ideas-that-you-would-like-to-see/19304
+
+https://github.com/heiskama/etherbet
+
+a ideia é que uma pessoa cria uma aposta, seta a odd dela e o fato que deve ser verdadeiro para que o autor ganhe a aposta, envia para o oponente e para um arbitro
+o oponente pode ou nao aceitar
+o arbitro pode ou nao aceitar
+dps de x horas o arbitro realiza sua decisao
+o dinheiro vai para quem ganhou a aposta
+
+a ideia do arbitro substitui o oraculo
+
+https://medium.com/coinmonks/blockchain-based-p2p-betting-810eadb092d
