@@ -13,14 +13,14 @@ contract BetContract {
         address payable owner;
         uint256 ownerAmount;
         address payable participant;
+        bool participant_accepted;
         address referee;
+        bool referee_accepted;
         string bet;
-        bool accepted;
     }
     
     uint256 betId = 0;
     
-    // pretendo passar a usar mapping
     mapping(uint256 => Bet) bets;
     
     /**
@@ -35,7 +35,6 @@ contract BetContract {
     address payable _participant, address _referee) payable public returns (uint256) {
         require(_amount == msg.value, "O valor depositado não confere");
         require(_owner == msg.sender, "O endereço do criador não é válido");
-        address owner = msg.sender;
         betId += 1;
         bets[betId] = Bet({id: betId,
             ownerAmount: _amount,
@@ -43,9 +42,32 @@ contract BetContract {
             participant: _participant,
             referee: _referee,
             bet: "spius",
-            accepted: false
+            participant_accepted: false,
+            referee_accepted: false
         });
         // para criar um endereço vazio: aaddress(0)
+        return betId;
+    }
+    
+    /**
+     * @dev Creates a bet
+     * @param _amount - of weis in the bet
+     * @param _owner - address of the creator
+     * @return id of the created bet
+     */
+    function create_bet(uint256 _amount, address payable _owner) payable public returns (uint256) {
+        require(_amount == msg.value, "O valor depositado não confere");
+        require(_owner == msg.sender, "O endereço do criador não é válido");
+        betId += 1;
+        bets[betId] = Bet({id: betId,
+            ownerAmount: _amount,
+            owner: _owner,
+            participant: address(0),
+            referee: address(0),
+            bet: "spius",
+            participant_accepted: false,
+            referee_accepted: false
+        });
         return betId;
     }
     
@@ -55,20 +77,43 @@ contract BetContract {
      */
     function cancel_bet(uint256 _betId) external {
         Bet storage bet = bets[_betId];
-        require(bet.owner == msg.sender && bet.accepted == false);
+        require(bet.owner == msg.sender, "Você não é o criador da aposta");
+        require(bet.participant_accepted == false, "Essa aposta já foi aceita");
         // transfere o dinheiro de volta para o criador da bet
         bet.owner.transfer(bet.ownerAmount);
         delete bets[_betId];
     }
     
     /**
-     * @dev Accepts a bet
+     * @dev Participant accepts a bet
      * @param _betId - id of the bet to be accepted
      */
-    function accept_bet(uint256 _betId) public {
+    function participant_accept_bet(uint256 _betId) public {
         Bet storage bet = bets[_betId];
-        require(bet.participant == msg.sender, "Você não é o participante dessa aposta");
-        bet.accepted = true;
+        // se tiver um participante definido, ele deve ser o msg.sender
+        if (bet.participant != address(0)) {
+            require(bet.participant == msg.sender, "Você não é o participante dessa aposta");
+        } else {
+            // se nao tiver participante definido, o msg.sender passa a ser o participante
+            bet.participant = msg.sender;
+        }
+        bet.participant_accepted = true;
+    }
+    
+    /**
+     * @dev Referee accepts a bet
+     * @param _betId - id of the bet to be accepted
+     */
+    function referee_accept_bet(uint256 _betId) public {
+        Bet storage bet = bets[_betId];
+        // se tiver um juiz definido, ele deve ser o msg.sender
+        if (bet.referee != address(0)) {
+            require(bet.referee == msg.sender, "Você não é o juiz dessa aposta");
+        } else {
+            // se nao tiver juiz definido, o msg.sender passa a ser o juiz
+            bet.referee = msg.sender;
+        }
+        bet.referee_accepted = true;
     }
     
     /**
@@ -78,6 +123,7 @@ contract BetContract {
      */
     function define_winner(uint256 _betId, address payable _winner) public {
         Bet storage bet = bets[_betId];
+        require(bet.referee == msg.sender, "Você não é o juiz dessa aposta");
         address owner = bet.owner;
         address participant = bet.participant;
         if (_winner == owner || _winner == participant) {
@@ -92,21 +138,5 @@ contract BetContract {
      */
     function check_contract_balance() external view returns (uint256){
         return address(this).balance;
-    }
-
-    /**
-     * @dev Store value in variable
-     * @param num value to store
-     */
-    function store(uint256 num) public {
-        number = num;
-    }
-
-    /**
-     * @dev Return value 
-     * @return value of 'number'
-     */
-    function retrieve() public view returns (uint256){
-        return number;
     }
 }
