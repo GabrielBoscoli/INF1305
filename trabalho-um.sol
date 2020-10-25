@@ -35,6 +35,7 @@ contract BetContract {
     address payable _participant, address _referee) payable public returns (uint256) {
         require(_amount == msg.value, "O valor depositado não confere");
         require(_owner == msg.sender, "O endereço do criador não é válido");
+        require(_owner != _participant, "O criador da aposta não pode ser também o participante");
         betId += 1;
         bets[betId] = Bet({id: betId,
             ownerAmount: _amount,
@@ -95,6 +96,7 @@ contract BetContract {
             require(bet.participant == msg.sender, "Você não é o participante dessa aposta");
         } else {
             // se nao tiver participante definido, o msg.sender passa a ser o participante
+            require(bet.participant != bet.owner, "Você não pode ser o participante dessa aposta pois já é o criador dela");
             bet.participant = msg.sender;
         }
         bet.participant_accepted = true;
@@ -111,6 +113,7 @@ contract BetContract {
             require(bet.referee == msg.sender, "Você não é o juiz dessa aposta");
         } else {
             // se nao tiver juiz definido, o msg.sender passa a ser o juiz
+            require(msg.sender != bet.owner && msg.sender != bet.participant, "O juiz não pode estar envolvido na aposta");
             bet.referee = msg.sender;
         }
         bet.referee_accepted = true;
