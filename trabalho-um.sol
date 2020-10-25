@@ -13,9 +13,10 @@ contract BetContract {
         address payable owner;
         uint256 ownerAmount;
         address payable participant;
-        bool participant_accepted;
+        uint256 participantAmount;
+        bool participantAccepted;
         address referee;
-        bool referee_accepted;
+        bool refereeAccepted;
         string bet;
     }
     
@@ -32,7 +33,7 @@ contract BetContract {
      * @return id of the created bet
      */
     function create_bet(uint256 _amount, address payable _owner,
-    address payable _participant, address _referee) payable public returns (uint256) {
+    address payable _participant, uint256 _pariticipantAmount, address _referee) payable public returns (uint256) {
         require(_amount == msg.value, "O valor depositado não confere");
         require(_owner == msg.sender, "O endereço do criador não é válido");
         require(_owner != _participant, "O criador da aposta não pode ser também o participante");
@@ -43,10 +44,10 @@ contract BetContract {
             participant: _participant,
             referee: _referee,
             bet: "spius",
-            participant_accepted: false,
-            referee_accepted: false
+            participantAccepted: false,
+            participantAmount: _pariticipantAmount,
+            refereeAccepted: false
         });
-        // para criar um endereço vazio: aaddress(0)
         return betId;
     }
     
@@ -56,7 +57,7 @@ contract BetContract {
      * @param _owner - address of the creator
      * @return id of the created bet
      */
-    function create_bet(uint256 _amount, address payable _owner) payable public returns (uint256) {
+    function create_bet(uint256 _amount, address payable _owner, uint256 _participantAmount) payable public returns (uint256) {
         require(_amount == msg.value, "O valor depositado não confere");
         require(_owner == msg.sender, "O endereço do criador não é válido");
         betId += 1;
@@ -66,8 +67,9 @@ contract BetContract {
             participant: address(0),
             referee: address(0),
             bet: "spius",
-            participant_accepted: false,
-            referee_accepted: false
+            participantAccepted: false,
+            participantAmount: _participantAmount,
+            refereeAccepted: false
         });
         return betId;
     }
@@ -79,7 +81,7 @@ contract BetContract {
     function cancel_bet(uint256 _betId) external {
         Bet storage bet = bets[_betId];
         require(bet.owner == msg.sender, "Você não é o criador da aposta");
-        require(bet.participant_accepted == false, "Essa aposta já foi aceita");
+        require(bet.participantAccepted == false, "Essa aposta já foi aceita");
         // transfere o dinheiro de volta para o criador da bet
         bet.owner.transfer(bet.ownerAmount);
         delete bets[_betId];
@@ -89,8 +91,9 @@ contract BetContract {
      * @dev Participant accepts a bet
      * @param _betId - id of the bet to be accepted
      */
-    function participant_accept_bet(uint256 _betId) public {
+    function participant_accept_bet(uint256 _betId) payable public {
         Bet storage bet = bets[_betId];
+        require(msg.value == bet.participantAmount, "Valor pago não confere");
         // se tiver um participante definido, ele deve ser o msg.sender
         if (bet.participant != address(0)) {
             require(bet.participant == msg.sender, "Você não é o participante dessa aposta");
@@ -99,7 +102,7 @@ contract BetContract {
             require(bet.participant != bet.owner, "Você não pode ser o participante dessa aposta pois já é o criador dela");
             bet.participant = msg.sender;
         }
-        bet.participant_accepted = true;
+        bet.participantAccepted = true;
     }
     
     /**
@@ -116,13 +119,13 @@ contract BetContract {
             require(msg.sender != bet.owner && msg.sender != bet.participant, "O juiz não pode estar envolvido na aposta");
             bet.referee = msg.sender;
         }
-        bet.referee_accepted = true;
+        bet.refereeAccepted = true;
     }
     
     /**
      * @dev Define who has won the bet
      * @param _betId - id of the bet to be accepted
-     * @param _winner - address of the winner account
+     * @param _winner - address of the winner account or 0, if bet results in a draw
      */
     function define_winner(uint256 _betId, address payable _winner) public {
         Bet storage bet = bets[_betId];
@@ -131,6 +134,10 @@ contract BetContract {
         address participant = bet.participant;
         if (_winner == owner || _winner == participant) {
             _winner.transfer(bet.ownerAmount);
+        } else if (_winner == address(0)) {
+            // se ocorrer um empate, o dinheiro de cada envolvido na aposta volta
+            bet.owner.transfer(bet.ownerAmount);
+            bet.participant.transfer(bet.participantAmount);
         }
     }
     
