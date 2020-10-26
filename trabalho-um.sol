@@ -148,6 +148,7 @@ contract BetContract {
     function defineWinner(uint256 _betId, address payable _winner) public {
         Bet storage bet = bets[_betId];
         require(bet.referee == msg.sender, "Você não é o juiz dessa aposta");
+        require(bet.participantAccepted == true, "O participante ainda não aceitou a aposta");
         address owner = bet.owner;
         address participant = bet.participant;
         require(_winner == owner || _winner == participant || _winner == address(0), "Endereço inválido");
@@ -172,6 +173,7 @@ contract BetContract {
         Bet storage bet = bets[_betId];
         require(now > bet.refereeDeadline, "O prazo limite ainda não foi excedido");
         require(msg.sender == bet.owner || msg.sender == bet.participant, "Você não está envolvido na aposta");
+        require(bet.participantAccepted == true && bet.refereeAccepted == true, "Essa operação não pode ser realizada. Cancele a aposta");
         // retorna o dinheiro aos envolvidos na aposta, dividindo a garantia do juiz
         bet.owner.transfer(bet.ownerAmount + bet.refereeTip + (bet.ownerAmount/2));
         bet.participant.transfer(bet.participantAmount + (bet.ownerAmount/2));
