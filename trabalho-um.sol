@@ -38,7 +38,7 @@ contract BetContract {
      * @param _refereeDeadline - maximum days in which the referee decision should be made
      * @return id of the created bet
      */
-    function create_bet(string memory _betText, uint256 _amount, address payable _owner,
+    function createBetWithParticipant(string memory _betText, uint256 _amount, address payable _owner,
     address payable _participant, uint256 _participantAmount, address payable _referee, uint256 _refereeTip, uint256 _refereeDeadline) payable public returns (uint256) {
         require(_amount == msg.value, "O valor depositado não confere");
         require(_owner == msg.sender, "O endereço do criador não é válido");
@@ -69,7 +69,7 @@ contract BetContract {
      * @param _refereeDeadline - maximum days in which the referee decision should be made
      * @return id of the created bet
      */
-    function create_bet(string memory _betText, uint256 _amount, address payable _owner, uint256 _participantAmount, uint256 _refereeTip, uint256 _refereeDeadline) payable public returns (uint256) {
+    function createBet(string memory _betText, uint256 _amount, address payable _owner, uint256 _participantAmount, uint256 _refereeTip, uint256 _refereeDeadline) payable public returns (uint256) {
         require(_amount == msg.value, "O valor depositado não confere");
         require(_owner == msg.sender, "O endereço do criador não é válido");
         betId += 1;
@@ -92,7 +92,7 @@ contract BetContract {
      * @dev Cancels an unaccepted bet and return money to the creator
      * @param _betId - id of the bet to be cancelled
      */
-    function cancel_bet(uint256 _betId) external {
+    function cancelBet(uint256 _betId) external {
         Bet storage bet = bets[_betId];
         require(bet.owner == msg.sender, "Você não é o criador da aposta");
         require(bet.participantAccepted == false, "Essa aposta já foi aceita");
@@ -105,7 +105,7 @@ contract BetContract {
      * @dev Participant accepts a bet
      * @param _betId - id of the bet to be accepted
      */
-    function participant_accept_bet(uint256 _betId) payable public {
+    function participantAcceptBet(uint256 _betId) payable public {
         Bet storage bet = bets[_betId];
         require(msg.value == bet.participantAmount, "Valor pago não confere");
         // se tiver um participante definido, ele deve ser o msg.sender
@@ -125,7 +125,7 @@ contract BetContract {
      * @param _refereeWarranty - amount referee deposits in good faith
      * needs to be exactly the same amout as the owner bet and it is returned once the bet winner is defined
      */
-    function referee_accept_bet(uint256 _betId, uint256 _refereeWarranty) payable public {
+    function refereeAcceptBet(uint256 _betId, uint256 _refereeWarranty) payable public {
         Bet storage bet = bets[_betId];
         require(bet.ownerAmount == _refereeWarranty, "A garantia não possui o valor adequado");
         require(msg.value == _refereeWarranty, "O valor depositado não confere");
@@ -145,7 +145,7 @@ contract BetContract {
      * @param _betId - id of the bet
      * @param _winner - address of the winner account or 0, if bet results in a draw
      */
-    function define_winner(uint256 _betId, address payable _winner) public {
+    function defineWinner(uint256 _betId, address payable _winner) public {
         Bet storage bet = bets[_betId];
         require(bet.referee == msg.sender, "Você não é o juiz dessa aposta");
         address owner = bet.owner;
@@ -167,7 +167,7 @@ contract BetContract {
      * @dev Returns the money of those involved in the bet, if referee deadline was exceeded
      * @param _betId - id of the bet
      */
-    function exceeded_deadline(uint256 _betId) external {
+    function exceededDeadline(uint256 _betId) external {
         Bet storage bet = bets[_betId];
         require(now > bet.refereeDeadline, "O prazo limite ainda não foi excedido");
         require(msg.sender == bet.owner || msg.sender == bet.participant, "Você não está envolvido na aposta");
@@ -182,7 +182,7 @@ contract BetContract {
      * @dev Return balance
      * @return balance of this contract
      */
-    function check_contract_balance() external view returns (uint256){
+    function checkContractBalance() external view returns (uint256){
         return address(this).balance;
     }
 }
