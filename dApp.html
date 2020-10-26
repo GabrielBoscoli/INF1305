@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Bet Contract</title>
+	<meta charset="UTF-8">
+	<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js"></script>
+	<script type="text/javascript">
+		const contract_address = "0x80aec1d099A6038Cd0169625A0C6e8c2e46b68a5";
+
+		const contract_abi = [
+			{
+				"type": "function",
+				"name": "createBetWithParticipant",
+				"inputs": [
+					{
+						"name": "_betText",
+						"type": "string"
+					},
+					{
+						"name": "_amount",
+						"type": "uint256"
+					},
+					{
+						"name": "_owner",
+						"type": "address"
+					},
+					{
+						"name": "_participant",
+						"type": "address"
+					},
+					{
+						"name": "_participantAmount",
+						"type": "uint256"
+					},
+					{
+						"name": "_referee",
+						"type": "address"
+					},
+					{
+						"name": "_refereeTip",
+						"type": "uint256"
+					},
+					{
+						"name": "_refereeDeadline",
+						"type": "uint256"
+					},
+				],
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "payable"
+			},
+			{
+				"type": "function",
+				"name": "createBet",
+				"inputs": [
+					{
+						"name": "_betText",
+						"type": "string"
+					},
+					{
+						"name": "_amount",
+						"type": "uint256"
+					},
+					{
+						"name": "_owner",
+						"type": "address"
+					},
+					{
+						"name": "_participantAmount",
+						"type": "uint256"
+					},
+					{
+						"name": "_refereeTip",
+						"type": "uint256"
+					},
+					{
+						"name": "_refereeDeadline",
+						"type": "uint256"
+					},
+				],
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "payable"
+			},
+			{
+				"type": "function",
+				"name": "cancelBet",
+				"inputs": [
+					{
+						"name": "_betId",
+						"type": "uint256"
+					}
+				],
+				"outputs": [],
+				"stateMutability": "nonpayable"
+			},
+			{
+				"type": "function",
+				"name": "participantAcceptBet",
+				"inputs": [
+					{
+						"name": "_betId",
+						"type": "uint256"
+					}
+				],
+				"outputs": [],
+				"stateMutability": "payable"
+			},
+			{
+				"type": "function",
+				"name": "refereeAcceptBet",
+				"inputs": [
+					{
+						"name": "_betId",
+						"type": "uint256"
+					},
+					{
+						"name": "_refereeWarranty",
+						"type": "uint256"
+					}
+				],
+				"outputs": [],
+				"stateMutability": "payable"
+			},
+			{
+				"type": "function",
+				"name": "exceededDeadline",
+				"inputs": [
+					{
+						"name": "_betId",
+						"type": "uint256"
+					}
+				],
+				"outputs": [],
+				"stateMutability": "nonpayable"
+			},
+			{
+				"type": "function",
+				"name": "checkContractBalance",
+				"inputs": [],
+				"outputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view"
+			},
+			{
+				"type": "function",
+				"name": "bets",
+				"inputs": [
+					{
+						"name": "_betId",
+						"type": "uint256"
+					}
+				],
+				"outputs": [
+					{
+						"name": "",
+						"type": "tuple",
+						"components": [
+							{
+								"name": "id",
+								"type": "uint256"
+							},
+							{
+								"name": "owner",
+								"type": "address"
+							},
+							{
+								"name": "ownerAmount",
+								"type": "uint256"
+							},
+							{
+								"name": "participant",
+								"type": "address"
+							},
+							{
+								"name": "participantAmount",
+								"type": "uint256"
+							},
+							{
+								"name": "participantAccepted",
+								"type": "bool"
+							},
+							{
+								"name": "referee",
+								"type": "address"
+							},
+							{
+								"name": "refereeTip",
+								"type": "uint256"
+							},
+							{
+								"name": "refereeAccepted",
+								"type": "bool"
+							},
+							{
+								"name": "refereeDeadline",
+								"type": "uint256"
+							},
+							{
+								"name": "betText",
+								"type": "string"
+							},
+						]
+					}
+				],
+				"stateMutability": "view"
+			}
+		];
+
+		const ethEnabled = () => {
+			if (window.ethereum) {
+		    	window.web3 = new Web3(window.ethereum);
+		    	window.ethereum.enable();
+		    	return true;
+		  	}
+		  	return false;
+		}
+
+		async function saveCoinbase () {
+			window.coinbase = await window.web3.eth.getCoinbase();
+		};
+
+		async function getAndShowVal () {
+		  	var val = window.SimpleStorage.methods.get().call();
+			document.getElementById("storedData").value = await val;
+		};
+
+		async function setVal () {
+			var val = document.getElementById("storedData").value;
+		  	window.SimpleStorage.methods.set(val).send(val, {from:window.coinbase});
+		}
+
+		async function createBetWithParticipant () {
+			var betText = document.getElementById("betTextForCreateBetWithParticipant").value;
+			var amount = document.getElementById("amountForCreateBetWithParticipant").value;
+			var owner = document.getElementById("ownerForCreateBetWithParticipant").value;
+			var participant = document.getElementById("participant").value;
+			var participantAmount = document.getElementById("participantAmountForCreateBetWithParticipant").value;
+			var referee = document.getElementById("referee").value;
+			var refereeTip = document.getElementById("refereeTipForCreateBetWithParticipant").value;
+			var refereeDeadline = document.getElementById("refereeDeadlineForCreateBetWithParticipant").value;
+		 	window.BetContract.methods.createBetWithParticipant(val).send(val, {from:window.coinbase});
+		}
+
+		if (!ethEnabled()) {
+		  alert("Metamask or browser with Ethereum not detected!");
+		}
+		else {
+			window.BetContract = new web3.eth.Contract(contract_abi, contract_address);
+			saveCoinbase();
+		}
+
+	</script>
+</head>
+<body>
+	<div>
+		<h1>Create Bet With Participant</h1>
+		Bet Text: <input type="text" name="betTextForCreateBetWithParticipant" id="betTextForCreateBetWithParticipant"><br>
+		Amount: <input type="text" name="amountForCreateBetWithParticipant" id="amountForCreateBetWithParticipant"><br>
+		Owner: <input type="text" name="ownerForCreateBetWithParticipant" id="ownerForCreateBetWithParticipant"><br>
+		Participant: <input type="text" name="participant" id="participant"><br>
+		Participant Amount: <input type="text" name="participantAmountForCreateBetWithParticipant" id="participantAmountForCreateBetWithParticipant"><br>
+		Referee: <input type="text" name="referee" id="referee"><br>
+		Referee Tip: <input type="text" name="refereeTipForCreateBetWithParticipant" id="refereeTipForCreateBetWithParticipant"><br>
+		Referee Deadline <input type="text" name="refereeDeadlineForCreateBetWithParticipant" id="refereeDeadlineForCreateBetWithParticipant"><br><br>
+		<button id="createBetWithParticipant" onclick="createBetWithParticipant()">Create Bet With Participant</button><br>
+	</div>
+	<div>
+		<h1>Create Bet Without Participant</h1>
+		Bet Text: <input type="text" name="betTextForCreateBet" id="betTextForCreateBet"><br>
+		Amount: <input type="text" name="amountForCreateBet" id="amountForCreateBet"><br>
+		Owner: <input type="text" name="ownerForCreateBet" id="ownerForCreateBet"><br>
+		Participant Amount: <input type="text" name="betTextForCreateBet" id="betTextForCreateBet"><br>
+		Referee Tip: <input type="text" name="refereeTipForCreateBet" id="refereeTipForCreateBet"><br>
+		Referee Deadline <input type="text" name="refereeDeadlineForCreateBet" id="refereeDeadlineForCreateBet"><br><br>
+	</div>
+	<div>
+		<h1>Cancel Bet</h1>
+		Bet Id: <input type="text" name="betIdForCancelBet" id="betIdForCancelBet"><br><br>
+	</div>
+	<div>
+		<h1>Participant Accepts Bet</h1>
+		Bet Id: <input type="text" name="betIdForParticipantAcceptBet" id="betIdForParticipantAcceptBet"><br><br>
+	</div>
+	<div>
+		<h1>Referee Accepts Bet</h1>
+		Bet Id: <input type="text" name="betIdForRefereeAcceptBet" id="betIdForRefereeAcceptBet"><br>
+		Referee Warranty: <input type="text" name="refereeWarranty" id="refereeWarranty"><br><br>
+	</div>
+	<div>
+		<h1>Define Winner</h1>
+		Bet Id: <input type="text" name="betIdForDefineWinner" id="betIdForDefineWinner"><br>
+		Winner: <input type="text" name="winner" id="winner"><br><br>
+	</div>
+	<div>
+		<h1>Exceeded Deadline</h1>
+		Bet Id: <input type="text" name="betIdForExceededDeadline" id="betIdForExceededDeadline"><br><br>
+	</div>
+	</body>
+	</html>
