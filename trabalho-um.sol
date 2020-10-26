@@ -15,7 +15,8 @@ contract BetContract {
         address payable participant;
         uint256 participantAmount;
         bool participantAccepted;
-        address referee;
+        address payable referee;
+        uint256 refereeTip;
         bool refereeAccepted;
         string betText;
     }
@@ -26,26 +27,30 @@ contract BetContract {
     
     /**
      * @dev Creates a bet with known participant and referee
+     * @param _betText - statement of the bet. if is true, the bet crator wins
      * @param _amount - of weis in the bet
-     * @param _owner - address of the creator
+     * @param _owner - address of the bet creator
      * @param _participant - address of the participant
+     * @param _participantAmount - amount of money that the participant needs to bet in order to participate
      * @param _referee - address of the referee
+     * @param _refereeTip - tip to encourage a referee to accept your bet. it is going to be subtracted of "_amount"
      * @return id of the created bet
      */
     function create_bet(string memory _betText, uint256 _amount, address payable _owner,
-    address payable _participant, uint256 _pariticipantAmount, address _referee) payable public returns (uint256) {
+    address payable _participant, uint256 _participantAmount, address payable _referee, uint256 _refereeTip) payable public returns (uint256) {
         require(_amount == msg.value, "O valor depositado não confere");
         require(_owner == msg.sender, "O endereço do criador não é válido");
         require(_owner != _participant, "O criador da aposta não pode ser também o participante");
         betId += 1;
         bets[betId] = Bet({id: betId,
-            ownerAmount: _amount,
+            ownerAmount: _amount - _refereeTip,
             owner: _owner,
             participant: _participant,
             referee: _referee,
+            refereeTip: _refereeTip,
             betText: _betText,
             participantAccepted: false,
-            participantAmount: _pariticipantAmount,
+            participantAmount: _participantAmount,
             refereeAccepted: false
         });
         return betId;
@@ -53,19 +58,23 @@ contract BetContract {
     
     /**
      * @dev Creates a bet with unknown participant and referee
+     * @param _betText - statement of the bet. if is true, the bet crator wins
      * @param _amount - of weis in the bet
-     * @param _owner - address of the creator
+     * @param _owner - address of the bet creator
+     * @param _participantAmount - amount of money that the participant needs to bet in order to participate
+     * @param _refereeTip - tip to encourage a referee to accept your bet
      * @return id of the created bet
      */
-    function create_bet(string memory _betText, uint256 _amount, address payable _owner, uint256 _participantAmount) payable public returns (uint256) {
+    function create_bet(string memory _betText, uint256 _amount, address payable _owner, uint256 _participantAmount, uint256 _refereeTip) payable public returns (uint256) {
         require(_amount == msg.value, "O valor depositado não confere");
         require(_owner == msg.sender, "O endereço do criador não é válido");
         betId += 1;
         bets[betId] = Bet({id: betId,
-            ownerAmount: _amount,
+            ownerAmount: _amount - _refereeTip,
             owner: _owner,
             participant: address(0),
             referee: address(0),
+            refereeTip: _refereeTip,
             betText: _betText,
             participantAccepted: false,
             participantAmount: _participantAmount,
@@ -139,6 +148,8 @@ contract BetContract {
             bet.owner.transfer(bet.ownerAmount);
             bet.participant.transfer(bet.participantAmount);
         }
+        // referee get his tip
+        bet.referee.transfer(bet.refereeTip);
     }
     
     // external for functions that should not be used internally
