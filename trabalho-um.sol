@@ -35,7 +35,7 @@ contract BetContract {
      * @param _participantAmount - amount of money that the participant needs to bet in order to participate
      * @param _referee - address of the referee
      * @param _refereeTip - tip to encourage a referee to accept your bet. it is going to be subtracted of "_amount"
-     * @param _refereeDeadline - defines maximum days in which the referee decision should be made
+     * @param _refereeDeadline - maximum days in which the referee decision should be made
      * @return id of the created bet
      */
     function create_bet(string memory _betText, uint256 _amount, address payable _owner,
@@ -66,7 +66,7 @@ contract BetContract {
      * @param _owner - address of the bet creator
      * @param _participantAmount - amount of money that the participant needs to bet in order to participate
      * @param _refereeTip - tip to encourage a referee to accept your bet
-     * @param _refereeDeadline - defines maximum days in which the referee decision should be made
+     * @param _refereeDeadline - maximum days in which the referee decision should be made
      * @return id of the created bet
      */
     function create_bet(string memory _betText, uint256 _amount, address payable _owner, uint256 _participantAmount, uint256 _refereeTip, uint256 _refereeDeadline) payable public returns (uint256) {
@@ -97,7 +97,7 @@ contract BetContract {
         require(bet.owner == msg.sender, "Você não é o criador da aposta");
         require(bet.participantAccepted == false, "Essa aposta já foi aceita");
         // transfere o dinheiro de volta para o criador da bet
-        bet.owner.transfer(bet.ownerAmount);
+        bet.owner.transfer(bet.ownerAmount + bet.refereeTip);
         delete bets[_betId];
     }
     
@@ -171,7 +171,7 @@ contract BetContract {
         Bet storage bet = bets[_betId];
         require(now > bet.refereeDeadline, "O prazo limite ainda não foi excedido");
         require(msg.sender == bet.owner || msg.sender == bet.participant, "Você não está envolvido na aposta");
-        // retorna o dinheiro aos envolvidos na aposta
+        // retorna o dinheiro aos envolvidos na aposta, dividindo a garantia do juiz
         bet.owner.transfer(bet.ownerAmount + bet.refereeTip + (bet.ownerAmount/2));
         bet.participant.transfer(bet.participantAmount + (bet.ownerAmount/2));
         delete bets[_betId];
