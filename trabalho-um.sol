@@ -17,7 +17,7 @@ contract BetContract {
         bool participantAccepted;
         address referee;
         bool refereeAccepted;
-        string bet;
+        string betText;
     }
     
     uint256 betId = 0;
@@ -32,7 +32,7 @@ contract BetContract {
      * @param _referee - address of the referee
      * @return id of the created bet
      */
-    function create_bet(uint256 _amount, address payable _owner,
+    function create_bet(string memory _betText, uint256 _amount, address payable _owner,
     address payable _participant, uint256 _pariticipantAmount, address _referee) payable public returns (uint256) {
         require(_amount == msg.value, "O valor depositado não confere");
         require(_owner == msg.sender, "O endereço do criador não é válido");
@@ -43,7 +43,7 @@ contract BetContract {
             owner: _owner,
             participant: _participant,
             referee: _referee,
-            bet: "spius",
+            betText: _betText,
             participantAccepted: false,
             participantAmount: _pariticipantAmount,
             refereeAccepted: false
@@ -52,12 +52,12 @@ contract BetContract {
     }
     
     /**
-     * @dev Creates a bet
+     * @dev Creates a bet with unknown participant and referee
      * @param _amount - of weis in the bet
      * @param _owner - address of the creator
      * @return id of the created bet
      */
-    function create_bet(uint256 _amount, address payable _owner, uint256 _participantAmount) payable public returns (uint256) {
+    function create_bet(string memory _betText, uint256 _amount, address payable _owner, uint256 _participantAmount) payable public returns (uint256) {
         require(_amount == msg.value, "O valor depositado não confere");
         require(_owner == msg.sender, "O endereço do criador não é válido");
         betId += 1;
@@ -66,7 +66,7 @@ contract BetContract {
             owner: _owner,
             participant: address(0),
             referee: address(0),
-            bet: "spius",
+            betText: _betText,
             participantAccepted: false,
             participantAmount: _participantAmount,
             refereeAccepted: false
