@@ -150,6 +150,7 @@ contract BetContract {
         require(bet.referee == msg.sender, "Você não é o juiz dessa aposta");
         address owner = bet.owner;
         address participant = bet.participant;
+        require(_winner == owner || _winner == participant || _winner == address(0), "Endereço inválido");
         if (_winner == owner || _winner == participant) {
             _winner.transfer(bet.ownerAmount);
         } else if (_winner == address(0)) {
