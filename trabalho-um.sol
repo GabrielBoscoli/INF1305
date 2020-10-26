@@ -117,9 +117,13 @@ contract BetContract {
     /**
      * @dev Referee accepts a bet
      * @param _betId - id of the bet to be accepted
+     * @param _refereeWarranty - amount referee deposits in good faith
+     * needs to be exactly the same amout as the owner bet and it is returned once the bet winner is defined
      */
-    function referee_accept_bet(uint256 _betId) public {
+    function referee_accept_bet(uint256 _betId, uint256 _refereeWarranty) payable public {
         Bet storage bet = bets[_betId];
+        require(bet.ownerAmount == _refereeWarranty, "A garantia não possui o valor adequado");
+        require(msg.value == _refereeWarranty, "O valor depositado não confere");
         // se tiver um juiz definido, ele deve ser o msg.sender
         if (bet.referee != address(0)) {
             require(bet.referee == msg.sender, "Você não é o juiz dessa aposta");
@@ -148,8 +152,9 @@ contract BetContract {
             bet.owner.transfer(bet.ownerAmount);
             bet.participant.transfer(bet.participantAmount);
         }
-        // referee get his tip
+        // referee get his tip and his warranty back
         bet.referee.transfer(bet.refereeTip);
+        bet.referee.transfer(bet.ownerAmount);
     }
     
     // external for functions that should not be used internally
