@@ -18,12 +18,13 @@ contract BetContract {
         address payable referee;
         uint256 refereeTip;
         bool refereeAccepted;
+        uint256 refereeDeadline;
         string betText;
     }
     
     uint256 betId = 0;
     
-    mapping(uint256 => Bet) bets;
+    mapping(uint256 => Bet) public bets;
     
     /**
      * @dev Creates a bet with known participant and referee
@@ -34,10 +35,11 @@ contract BetContract {
      * @param _participantAmount - amount of money that the participant needs to bet in order to participate
      * @param _referee - address of the referee
      * @param _refereeTip - tip to encourage a referee to accept your bet. it is going to be subtracted of "_amount"
+     * @param _refereeDeadline - defines maximum days in which the referee decision should be made
      * @return id of the created bet
      */
     function create_bet(string memory _betText, uint256 _amount, address payable _owner,
-    address payable _participant, uint256 _participantAmount, address payable _referee, uint256 _refereeTip) payable public returns (uint256) {
+    address payable _participant, uint256 _participantAmount, address payable _referee, uint256 _refereeTip, uint256 _refereeDeadline) payable public returns (uint256) {
         require(_amount == msg.value, "O valor depositado não confere");
         require(_owner == msg.sender, "O endereço do criador não é válido");
         require(_owner != _participant, "O criador da aposta não pode ser também o participante");
@@ -51,7 +53,8 @@ contract BetContract {
             betText: _betText,
             participantAccepted: false,
             participantAmount: _participantAmount,
-            refereeAccepted: false
+            refereeAccepted: false,
+            refereeDeadline: now + (_refereeDeadline * 1 days)
         });
         return betId;
     }
@@ -63,9 +66,10 @@ contract BetContract {
      * @param _owner - address of the bet creator
      * @param _participantAmount - amount of money that the participant needs to bet in order to participate
      * @param _refereeTip - tip to encourage a referee to accept your bet
+     * @param _refereeDeadline - defines maximum days in which the referee decision should be made
      * @return id of the created bet
      */
-    function create_bet(string memory _betText, uint256 _amount, address payable _owner, uint256 _participantAmount, uint256 _refereeTip) payable public returns (uint256) {
+    function create_bet(string memory _betText, uint256 _amount, address payable _owner, uint256 _participantAmount, uint256 _refereeTip, uint256 _refereeDeadline) payable public returns (uint256) {
         require(_amount == msg.value, "O valor depositado não confere");
         require(_owner == msg.sender, "O endereço do criador não é válido");
         betId += 1;
@@ -78,7 +82,8 @@ contract BetContract {
             betText: _betText,
             participantAccepted: false,
             participantAmount: _participantAmount,
-            refereeAccepted: false
+            refereeAccepted: false,
+            refereeDeadline: now + (_refereeDeadline * 1 days)
         });
         return betId;
     }
@@ -137,7 +142,7 @@ contract BetContract {
     
     /**
      * @dev Define who has won the bet
-     * @param _betId - id of the bet to be accepted
+     * @param _betId - id of the bet
      * @param _winner - address of the winner account or 0, if bet results in a draw
      */
     function define_winner(uint256 _betId, address payable _winner) public {
@@ -155,6 +160,21 @@ contract BetContract {
         // referee get his tip and his warranty back
         bet.referee.transfer(bet.refereeTip);
         bet.referee.transfer(bet.ownerAmount);
+        delete bets[_betId];
+    }
+    
+    /**
+     * @dev Returns the money of those involved in the bet, if referee deadline was exceeded
+     * @param _betId - id of the bet
+     */
+    function exceeded_deadline(uint256 _betId) external {
+        Bet storage bet = bets[_betId];
+        require(now > bet.refereeDeadline, "O prazo limite ainda não foi excedido");
+        require(msg.sender == bet.owner || msg.sender == bet.participant, "Você não está envolvido na aposta");
+        // retorna o dinheiro aos envolvidos na aposta
+        bet.owner.transfer(bet.ownerAmount + bet.refereeTip + (bet.ownerAmount/2));
+        bet.participant.transfer(bet.participantAmount + (bet.ownerAmount/2));
+        delete bets[_betId];
     }
     
     // external for functions that should not be used internally
