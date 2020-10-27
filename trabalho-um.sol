@@ -26,6 +26,8 @@ contract BetContract {
     
     mapping(uint256 => Bet) public bets;
     
+    event BetCreated(address addr, uint256 _betId);
+    
     /**
      * @dev Creates a bet with known participant and referee
      * @param _betText - statement of the bet. if is true, the bet crator wins
@@ -56,6 +58,7 @@ contract BetContract {
             refereeAccepted: false,
             refereeDeadline: now + (_refereeDeadline * 1 days)
         });
+        emit BetCreated(msg.sender, betId);
         return betId;
     }
     
