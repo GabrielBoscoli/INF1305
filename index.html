@@ -251,7 +251,7 @@
 				var referee = document.getElementById("referee").value;
 				var refereeTip = document.getElementById("refereeTipForCreateBetWithParticipant").value;
 				var refereeDeadline = document.getElementById("refereeDeadlineForCreateBetWithParticipant").value;
-				var val = window.BetContract.methods.createBetWithParticipant(betText, amount, owner, participant, participantAmount, referee, refereeTip, refereeDeadline).send({from:window.coinbase});
+				var val = window.BetContract.methods.createBetWithParticipant(betText, amount, owner, participant, participantAmount, referee, refereeTip, refereeDeadline).sendTransaction({from:window.coinbase, to: "0xAB8a2bcCeD6d100A956834165042F0DefbFf6EF8", value: amount});
 				document.getElementById("createdBetWithParticipantId").value = await val;
 			}
 
@@ -262,7 +262,7 @@
 				var participantAmount = document.getElementById("participantAmountForCreateBet").value;
 				var refereeTip = document.getElementById("refereeTipForCreateBet").value;
 				var refereeDeadline = document.getElementById("refereeDeadlineForCreateBet").value;
-				var val = window.BetContract.methods.createBet(betText, amount, owner, participantAmount, refereeTip, refereeDeadline).send({from:window.coinbase});
+				var val = window.BetContract.methods.createBet(betText, amount, owner, participantAmount, refereeTip, refereeDeadline).sendTransaction({from:window.coinbase, to: "0xAB8a2bcCeD6d100A956834165042F0DefbFf6EF8", value: amount});
 				document.getElementById("createdBetId").value = await val;
 			}
 
