@@ -95,9 +95,17 @@ contract BetContract {
     function cancelBet(uint256 _betId) external {
         Bet storage bet = bets[_betId];
         require(bet.owner == msg.sender, "Você não é o criador da aposta");
-        require(bet.participantAccepted == false, "Essa aposta já foi aceita");
+        require(bet.participantAccepted == false || bet.refereeAccepted == false, "Essa aposta não pode ser cancelada");
         // transfere o dinheiro de volta para o criador da bet
         bet.owner.transfer(bet.ownerAmount + bet.refereeTip);
+        // trasfere o dinheiro de volta para o juiz, caso ele tenha aceitado a bet
+        if (bet.refereeAccepted == true) {
+            bet.referee.transfer(bet.ownerAmount);
+        }
+        // transfere o dinheiro de volta para o participante, caso tenha aceitado a bet
+        if (bet.participantAccepted == true) {
+            bet.participant.transfer(bet.participantAmount);
+        }
         delete bets[_betId];
     }
     
