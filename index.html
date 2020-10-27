@@ -273,14 +273,13 @@
 
 			async function participantAcceptBet () {
 				var betId = document.getElementById("betIdForParticipantAcceptBet").value;
-				window.BetContract.methods.participantAcceptBet(betId).send({from:window.coinbase});
+				var amount = document.getElementById("amountForParticipantAcceptBet").value;
+				window.BetContract.methods.participantAcceptBet(betId).send({from:window.coinbase, to: contract_address, value: amount});
 			}
 
-			async function refereeAcceptBet () {
-				var betId = document.getElementById("betIdForRefereeAcceptBet").value;
-				var warranty = document.getElementById("refereeWarranty").value;
-				var amount = document.getElementById("AmountForRefereeAcceptBet").value;
-				window.BetContract.methods.participantAcceptBet(betId, warranty).send({from:window.coinbase, to: contract_address, value: amount});
+			async function participantDeclineBet () {
+				var betId = document.getElementById("betIdForParticipantDeclineBet").value;
+				window.BetContract.methods.participantDeclineBet(betId).send({from:window.coinbase});
 			}
 
 			async function refereeAcceptBet () {
@@ -288,6 +287,11 @@
 				var warranty = document.getElementById("refereeWarranty").value;
 				var amount = document.getElementById("amountForRefereeAcceptBet").value;
 				window.BetContract.methods.refereeAcceptBet(betId, warranty).send({from:window.coinbase, to: contract_address, value: amount});
+			}
+
+			async function refereeDeclineBet () {
+				var betId = document.getElementById("betIdForRefereeDeclineBet").value;
+				window.BetContract.methods.refereeDeclineBet(betId).send({from:window.coinbase, to: contract_address, value: amount});
 			}
 
 			async function defineWinner () {
@@ -348,11 +352,21 @@
 			<button id="participantAcceptBet" onclick="participantAcceptBet()">Participant Accept Bet</button><br>
 		</div>
 		<div>
+			<h1>Participant Declines Bet</h1>
+			Bet Id: <input type="text" name="betIdForParticipantDeclineBet" id="betIdForParticipantDeclineBet"><br><br>
+			<button id="participantDeclineBet" onclick="participantDeclineBet()">Participant Decline Bet</button><br>
+		</div>
+		<div>
 			<h1>Referee Accepts Bet</h1>
 			Bet Id: <input type="text" name="betIdForRefereeAcceptBet" id="betIdForRefereeAcceptBet"><br>
 			Referee Warranty: <input type="text" name="refereeWarranty" id="refereeWarranty"><br>
 			Amount: <input type="text" name="amountForRefereeAcceptBet" id="amountForRefereeAcceptBet"><br><br>
 			<button id="refereeAcceptBet" onclick="refereeAcceptBet()">Referee Accept Bet</button><br>
+		</div>
+		<div>
+			<h1>Referee Declines Bet</h1>
+			Bet Id: <input type="text" name="betIdForRefereeDeclinesBet" id="betIdForRefereeDeclinesBet"><br><br>
+			<button id="refereeDeclineBet" onclick="refereeDeclineBet()">Referee Decline Bet</button><br>
 		</div>
 		<div>
 			<h1>Define Winner</h1>
