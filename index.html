@@ -251,7 +251,7 @@
 				var referee = document.getElementById("referee").value;
 				var refereeTip = document.getElementById("refereeTipForCreateBetWithParticipant").value;
 				var refereeDeadline = document.getElementById("refereeDeadlineForCreateBetWithParticipant").value;
-				var val = window.BetContract.methods.createBetWithParticipant(betText, amount, owner, participant, participantAmount, referee, refereeTip, refereeDeadline).sendTransaction({from:window.coinbase, to: "0xAB8a2bcCeD6d100A956834165042F0DefbFf6EF8", value: amount});
+				var val = window.BetContract.methods.createBetWithParticipant(betText, amount, owner, participant, participantAmount, referee, refereeTip, refereeDeadline).send({from:window.coinbase, to: "0xAB8a2bcCeD6d100A956834165042F0DefbFf6EF8", value: amount});
 				document.getElementById("createdBetWithParticipantId").value = await val;
 			}
 
@@ -262,7 +262,7 @@
 				var participantAmount = document.getElementById("participantAmountForCreateBet").value;
 				var refereeTip = document.getElementById("refereeTipForCreateBet").value;
 				var refereeDeadline = document.getElementById("refereeDeadlineForCreateBet").value;
-				var val = window.BetContract.methods.createBet(betText, amount, owner, participantAmount, refereeTip, refereeDeadline).sendTransaction({from:window.coinbase, to: "0xAB8a2bcCeD6d100A956834165042F0DefbFf6EF8", value: amount});
+				var val = window.BetContract.methods.createBet(betText, amount, owner, participantAmount, refereeTip, refereeDeadline).send({from:window.coinbase, to: "0xAB8a2bcCeD6d100A956834165042F0DefbFf6EF8", value: amount});
 				document.getElementById("createdBetId").value = await val;
 			}
 
@@ -328,7 +328,7 @@
 			Bet Text: <input type="text" name="betTextForCreateBet" id="betTextForCreateBet"><br>
 			Amount: <input type="text" name="amountForCreateBet" id="amountForCreateBet"><br>
 			Owner: <input type="text" name="ownerForCreateBet" id="ownerForCreateBet"><br>
-			Participant Amount: <input type="text" name="betTextForCreateBet" id="betTextForCreateBet"><br>
+			Participant Amount: <input type="text" name="participantAmountForCreateBet" id="participantAmountForCreateBet"><br>
 			Referee Tip: <input type="text" name="refereeTipForCreateBet" id="refereeTipForCreateBet"><br>
 			Referee Deadline <input type="text" name="refereeDeadlineForCreateBet" id="refereeDeadlineForCreateBet"><br><br>
 			<button id="createBetWithParticipant" onclick="createBet()">Create Bet Without Participant</button><br>
