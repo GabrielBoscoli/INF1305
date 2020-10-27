@@ -120,6 +120,23 @@ contract BetContract {
     }
     
     /**
+     * @dev Participant decline a bet
+     * @param _betId - id of the bet to be declined
+     */
+    function participantDeclineBet(uint256 _betId) external {
+        Bet storage bet = bets[_betId];
+        require(msg.sender == bet.participant, "Você não é o participante da aposta");
+        require(bet.participantAccepted == false || bet.refereeAccepted == false, "Você não pode sair dessa aposta");
+        // transfere o dinheiro de volta para o participante, caso ele tenha aceitado
+        if (bet.participantAccepted == true) {
+            bet.participant.transfer(bet.participantAmount);
+        }
+        // tira os dados do participant da aposta
+        bet.participant = address(0);
+        bet.participantAccepted == false;
+    }
+    
+    /**
      * @dev Referee accepts a bet
      * @param _betId - id of the bet to be accepted
      * @param _refereeWarranty - amount referee deposits in good faith
@@ -142,14 +159,16 @@ contract BetContract {
     
     /**
      * @dev Referee decline a bet
-     * @param _betId - id of the bet
+     * @param _betId - id of the bet to be declined
      */
     function refereeDeclineBet(uint256 _betId) external {
         Bet storage bet = bets[_betId];
         require(msg.sender == bet.referee, "Você não é o juiz da aposta");
-        require(bet.participantAccepted == false, "Você não pode sair de uma aposta em que o participante já aceitou");
-        // transfere a garantia de volta para o juiz
-        bet.referee.transfer(bet.ownerAmount);
+        require(bet.refereeAccepted == false || bet.participantAccepted == false, "Você não pode sair dessa aposta");
+        // transfere a garantia de volta para o juiz, caso ele tenha aceitado a aposta
+        if (bet.refereeAccepted == true) {
+            bet.referee.transfer(bet.ownerAmount);
+        }
         // tira os dados do juiz da aposta
         bet.referee = address(0);
         bet.refereeAccepted == false;
