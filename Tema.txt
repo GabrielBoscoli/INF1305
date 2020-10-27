@@ -38,3 +38,8 @@ o dinheiro vai para quem ganhou a aposta
 a ideia do arbitro substitui o oraculo
 
 https://medium.com/coinmonks/blockchain-based-p2p-betting-810eadb092d
+
+enderecos das carteiras
+0x95bF512830af568415633C4E285e0a304F36BA2B
+0x901329A6207fe2E2522dF35AfcEBA1b771B58EBb
+0x2EFaAcc36A0acc2DDf8b554325bC390Cd3e9a0B0

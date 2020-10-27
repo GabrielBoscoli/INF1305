@@ -195,7 +195,7 @@ contract BetContract {
         address participant = bet.participant;
         require(_winner == owner || _winner == participant || _winner == address(0), "Endereço inválido");
         if (_winner == owner || _winner == participant) {
-            _winner.transfer(bet.ownerAmount);
+            _winner.transfer(bet.ownerAmount + bet.participantAmount);
         } else if (_winner == address(0)) {
             // se ocorrer um empate, o dinheiro de cada envolvido na aposta volta
             bet.owner.transfer(bet.ownerAmount);
