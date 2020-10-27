@@ -251,8 +251,8 @@
 				var referee = document.getElementById("referee").value;
 				var refereeTip = document.getElementById("refereeTipForCreateBetWithParticipant").value;
 				var refereeDeadline = document.getElementById("refereeDeadlineForCreateBetWithParticipant").value;
-				var val = window.BetContract.methods.createBetWithParticipant(betText, amount, owner, participant, participantAmount, referee, refereeTip, refereeDeadline).send({from:window.coinbase, to: "0xAB8a2bcCeD6d100A956834165042F0DefbFf6EF8", value: amount});
-				document.getElementById("createdBetWithParticipantId").value = await val;
+				var val = window.BetContract.methods.createBetWithParticipant(betText, amount, owner, participant, participantAmount, referee, refereeTip, refereeDeadline).send({from:window.coinbase, to: contract_address, value: amount});
+				document.getElementById("createdBetWithParticipantId").innerHTML = await val;
 			}
 
 			async function createBet () {
@@ -262,8 +262,8 @@
 				var participantAmount = document.getElementById("participantAmountForCreateBet").value;
 				var refereeTip = document.getElementById("refereeTipForCreateBet").value;
 				var refereeDeadline = document.getElementById("refereeDeadlineForCreateBet").value;
-				var val = window.BetContract.methods.createBet(betText, amount, owner, participantAmount, refereeTip, refereeDeadline).send({from:window.coinbase, to: "0xAB8a2bcCeD6d100A956834165042F0DefbFf6EF8", value: amount});
-				document.getElementById("createdBetId").value = await val;
+				var val = window.BetContract.methods.createBet(betText, amount, owner, participantAmount, refereeTip, refereeDeadline).send({from:window.coinbase, to: contract_address, value: amount});
+				document.getElementById("createdBetId").innerHTML = await val;
 			}
 
 			async function cancelBet () {
@@ -279,13 +279,15 @@
 			async function refereeAcceptBet () {
 				var betId = document.getElementById("betIdForRefereeAcceptBet").value;
 				var warranty = document.getElementById("refereeWarranty").value;
-				window.BetContract.methods.participantAcceptBet(betId, warranty).send({from:window.coinbase});
+				var amount = document.getElementById("AmountForRefereeAcceptBet").value;
+				window.BetContract.methods.participantAcceptBet(betId, warranty).send({from:window.coinbase, to: contract_address, value: amount});
 			}
 
 			async function refereeAcceptBet () {
 				var betId = document.getElementById("betIdForRefereeAcceptBet").value;
 				var warranty = document.getElementById("refereeWarranty").value;
-				window.BetContract.methods.refereeAcceptBet(betId, warranty).send({from:window.coinbase});
+				var amount = document.getElementById("amountForRefereeAcceptBet").value;
+				window.BetContract.methods.refereeAcceptBet(betId, warranty).send({from:window.coinbase, to: contract_address, value: amount});
 			}
 
 			async function defineWinner () {
@@ -342,12 +344,14 @@
 		<div>
 			<h1>Participant Accepts Bet</h1>
 			Bet Id: <input type="text" name="betIdForParticipantAcceptBet" id="betIdForParticipantAcceptBet"><br><br>
+			Amount: <input type="text" name="amountForParticipantAcceptBet" id="amountForParticipantAcceptBet"><br><br>
 			<button id="participantAcceptBet" onclick="participantAcceptBet()">Participant Accept Bet</button><br>
 		</div>
 		<div>
 			<h1>Referee Accepts Bet</h1>
 			Bet Id: <input type="text" name="betIdForRefereeAcceptBet" id="betIdForRefereeAcceptBet"><br>
 			Referee Warranty: <input type="text" name="refereeWarranty" id="refereeWarranty"><br><br>
+			Amount: <input type="text" name="amountForRefereeAcceptBet" id="amountForRefereeAcceptBet"><br>
 			<button id="refereeAcceptBet" onclick="refereeAcceptBet()">Referee Accept Bet</button><br>
 		</div>
 		<div>
