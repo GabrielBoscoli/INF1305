@@ -105,7 +105,7 @@ contract BetContract {
      * @dev Participant accepts a bet
      * @param _betId - id of the bet to be accepted
      */
-    function participantAcceptBet(uint256 _betId) payable public {
+    function participantAcceptBet(uint256 _betId) payable external {
         Bet storage bet = bets[_betId];
         require(msg.value == bet.participantAmount, "Valor pago não confere");
         // se tiver um participante definido, ele deve ser o msg.sender
@@ -125,7 +125,7 @@ contract BetContract {
      * @param _refereeWarranty - amount referee deposits in good faith
      * needs to be exactly the same amout as the owner bet and it is returned once the bet winner is defined
      */
-    function refereeAcceptBet(uint256 _betId, uint256 _refereeWarranty) payable public {
+    function refereeAcceptBet(uint256 _betId, uint256 _refereeWarranty) payable external {
         Bet storage bet = bets[_betId];
         require(bet.ownerAmount == _refereeWarranty, "A garantia não possui o valor adequado");
         require(msg.value == _refereeWarranty, "O valor depositado não confere");
@@ -141,11 +141,26 @@ contract BetContract {
     }
     
     /**
+     * @dev Referee decline a bet
+     * @param _betId - id of the bet
+     */
+    function refereeDeclineBet(uint256 _betId) external {
+        Bet storage bet = bets[_betId];
+        require(msg.sender == bet.referee, "Você não é o juiz da aposta");
+        require(bet.participantAccepted == false, "Você não pode sair de uma aposta em que o participante já aceitou");
+        // transfere a garantia de volta para o juiz
+        bet.referee.transfer(bet.ownerAmount);
+        // tira os dados do juiz da aposta
+        bet.referee = address(0);
+        bet.refereeAccepted == false;
+    }
+    
+    /**
      * @dev Define who has won the bet
      * @param _betId - id of the bet
      * @param _winner - address of the winner account or 0, if bet results in a draw
      */
-    function defineWinner(uint256 _betId, address payable _winner) public {
+    function defineWinner(uint256 _betId, address payable _winner) external {
         Bet storage bet = bets[_betId];
         require(bet.referee == msg.sender, "Você não é o juiz dessa aposta");
         require(bet.participantAccepted == true, "O participante ainda não aceitou a aposta");
@@ -180,7 +195,6 @@ contract BetContract {
         delete bets[_betId];
     }
     
-    // external for functions that should not be used internally
     /**
      * @dev Return balance
      * @return balance of this contract
