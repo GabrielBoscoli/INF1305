@@ -5,7 +5,7 @@
 		<meta charset="UTF-8">
 		<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js"></script>
 		<script type="text/javascript">
-			const contract_address = "0xf4f71c1B235Fbc145592297B10bf7050F016a5fb";
+			const contract_address = "0x62B219A61d6e1d46daF266CB36b3cca952b5e652";
 
 			const contract_abi = [
 				{
@@ -156,7 +156,7 @@
 				},
 				{
 					"type": "function",
-					"name": "bets",
+					"name": "getBet",
 					"inputs": [
 						{
 							"name": "_betId",
@@ -165,54 +165,44 @@
 					],
 					"outputs": [
 						{
-							"name": "",
-							"type": "tuple",
-							"components": [
-								{
-									"name": "id",
-									"type": "uint256"
-								},
-								{
-									"name": "owner",
-									"type": "address"
-								},
-								{
-									"name": "ownerAmount",
-									"type": "uint256"
-								},
-								{
-									"name": "participant",
-									"type": "address"
-								},
-								{
-									"name": "participantAmount",
-									"type": "uint256"
-								},
-								{
-									"name": "participantAccepted",
-									"type": "bool"
-								},
-								{
-									"name": "referee",
-									"type": "address"
-								},
-								{
-									"name": "refereeTip",
-									"type": "uint256"
-								},
-								{
-									"name": "refereeAccepted",
-									"type": "bool"
-								},
-								{
-									"name": "refereeDeadline",
-									"type": "uint256"
-								},
-								{
-									"name": "betText",
-									"type": "string"
-								},
-							]
+							"name": "owner",
+							"type": "address"
+						},
+						{
+							"name": "ownerAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "participant",
+							"type": "address"
+						},
+						{
+							"name": "participantAmount",
+							"type": "uint256"
+						},
+						{
+							"name": "participantAccepted",
+							"type": "bool"
+						},
+						{
+							"name": "referee",
+							"type": "address"
+						},
+						{
+							"name": "refereeTip",
+							"type": "uint256"
+						},
+						{
+							"name": "refereeAccepted",
+							"type": "bool"
+						},
+						{
+							"name": "refereeDeadline",
+							"type": "uint256"
+						},
+						{
+							"name": "betText",
+							"type": "string"
 						}
 					],
 					"stateMutability": "view"
@@ -325,6 +315,7 @@
 				var betId = document.getElementById("betIdForGetBet").value;
 				var val = window.BetContract.methods.bets(betId).call();
 				val = await val;
+				console.log(val);
 				document.getElementById("betOwnerAddress").value = val.owner;
 				document.getElementById("betOwnerAmount").value = val.ownerAmount;
 				document.getElementById("betParticipantAddress").value = val.participant;
