@@ -313,7 +313,7 @@
 
 			async function getBet () {
 				var betId = document.getElementById("betIdForGetBet").value;
-				var val = window.BetContract.methods.bets(betId).call();
+				var val = window.BetContract.methods.getBet(betId).call();
 				val = await val;
 				console.log(val);
 				document.getElementById("betOwnerAddress").value = val.owner;
