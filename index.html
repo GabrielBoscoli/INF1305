@@ -313,9 +313,7 @@
 
 			async function getBet () {
 				var betId = document.getElementById("betIdForGetBet").value;
-				var val = window.BetContract.methods.getBet(betId).call();
-				val = await val;
-				console.log(val);
+				var val = await window.BetContract.methods.getBet(betId).call();
 				document.getElementById("betOwnerAddress").value = val.owner;
 				document.getElementById("betOwnerAmount").value = val.ownerAmount;
 				document.getElementById("betParticipantAddress").value = val.participant;
@@ -406,16 +404,16 @@
 			<h1>Get Bet</h1>
 			Bet Id: <input type="text" name="betIdForGetBet" id="betIdForGetBet"><br><br>
 			<button id="getBet" onclick="getBet()">Get Bet</button><br>
-			Owner Address: <span id="betOwnerAddress">-</span>
-			Owner Amount: <span id="betOwnerAmount">-</span>
-			Participant Address: <span id="betParticipantAddress">-</span>
-			Participant Amount: <span id="betParticipantAmount">-</span>
-			Participant Accepted: <span id="betParticipantAccepted">-</span>
-			Referee Amount: <span id="betRefereeAmount">-</span>
-			Referee Tip: <span id="betRefereeTip">-</span>
-			Referee Accepted: <span id="betRefereeAccepted">-</span>
-			Referee Deadline: <span id="betRefereeDeadline">-</span>
-			Bet Text: <span id="betText">-</span>
+			Owner Address: <span id="betOwnerAddress">-</span><br>
+			Owner Amount: <span id="betOwnerAmount">-</span><br>
+			Participant Address: <span id="betParticipantAddress">-</span><br>
+			Participant Amount: <span id="betParticipantAmount">-</span><br>
+			Participant Accepted: <span id="betParticipantAccepted">-</span><br>
+			Referee Address: <span id="betRefereeAddress">-</span><br>
+			Referee Tip: <span id="betRefereeTip">-</span><br>
+			Referee Accepted: <span id="betRefereeAccepted">-</span><br>
+			Referee Deadline: <span id="betRefereeDeadline">-</span><br>
+			Bet Text: <span id="betText">-</span><br>
 		</div>
 	</body>
 </html>
