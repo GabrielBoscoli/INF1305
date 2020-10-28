@@ -88,6 +88,7 @@ contract BetContract {
             refereeAccepted: false,
             refereeDeadline: now + (_refereeDeadline * 1 days)
         });
+        emit BetCreated(msg.sender, betId);
         return betId;
     }
     
