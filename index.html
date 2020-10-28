@@ -322,7 +322,7 @@
 
 			async function refereeDeclineBet () {
 				var betId = document.getElementById("betIdForRefereeDeclineBet").value;
-				window.BetContract.methods.refereeDeclineBet(betId).send();
+				window.BetContract.methods.refereeDeclineBet(betId).send({from:window.coinbase});
 			}
 
 			async function defineWinner () {
