@@ -208,6 +208,18 @@
 					"stateMutability": "view"
 				},
 				{
+					"type": "function",
+					"name": "checkContractBalance",
+					"inputs": [],
+					"outputs": [
+						{
+							"name": "",
+							"type": "uint256"
+						}
+					],
+					"stateMutability": "view"
+				},
+				{
 					"type": "event",
 					"name": "BetCreated",
 					"inputs": [
@@ -326,6 +338,11 @@
 				document.getElementById("betText").innerHTML = val.betText;
 			}
 
+			async function checkContractBalance () {
+				var val = await window.BetContract.methods.checkContractBalance().call();
+				document.getElementById("contractBalance").innerHTML = val;
+			}
+
 			if (!ethEnabled()) {
 			alert("Metamask or browser with Ethereum not detected!");
 			}
@@ -414,6 +431,11 @@
 			Referee Accepted: <span id="betRefereeAccepted">-</span><br>
 			Referee Deadline: <span id="betRefereeDeadline">-</span><br>
 			Bet Text: <span id="betText">-</span><br>
+		</div>
+		<div>
+			<h1>Check Contract Balance</h1>
+			<button id="checkContractBalance" onclick="checkContractBalance()">Check Contract Balance</button><br>
+			Contract Balance: <span id="contractBalance">-</span><br>
 		</div>
 	</body>
 </html>
