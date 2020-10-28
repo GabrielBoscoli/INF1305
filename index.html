@@ -5,7 +5,7 @@
 		<meta charset="UTF-8">
 		<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.34/dist/web3.min.js"></script>
 		<script type="text/javascript">
-			const contract_address = "0xAB8a2bcCeD6d100A956834165042F0DefbFf6EF8";
+			const contract_address = "0x520825e3FD41613E9fa2dDc816A72224fB73f98B";
 
 			const contract_abi = [
 				{
@@ -263,6 +263,7 @@
 				var refereeTip = document.getElementById("refereeTipForCreateBet").value;
 				var refereeDeadline = document.getElementById("refereeDeadlineForCreateBet").value;
 				var val = window.BetContract.methods.createBet(betText, amount, owner, participantAmount, refereeTip, refereeDeadline).send({from:window.coinbase, to: contract_address, value: amount});
+				window.BetContract.once('BetCreated', { filter: {addr: owner}}, function(error, event){ console.log(event); console.log("spius"); })
 				document.getElementById("createdBetId").innerHTML = await val;
 				console.log(val);
 			}
