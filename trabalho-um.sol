@@ -5,8 +5,6 @@ pragma solidity >=0.4.22 <0.7.0;
  * @dev Create p2p bets and sends the reward to the winner
  */
 contract BetContract {
-
-    uint256 number;
     
     struct Bet {
         address payable owner;
