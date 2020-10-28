@@ -314,16 +314,16 @@
 			async function getBet () {
 				var betId = document.getElementById("betIdForGetBet").value;
 				var val = await window.BetContract.methods.getBet(betId).call();
-				document.getElementById("betOwnerAddress").value = val.owner;
-				document.getElementById("betOwnerAmount").value = val.ownerAmount;
-				document.getElementById("betParticipantAddress").value = val.participant;
-				document.getElementById("betParticipantAmount").value = val.participantAmount;
-				document.getElementById("betParticipantAccepted").value = val.participantAccepted;
-				document.getElementById("betRefereeAddress").value = val.referee;
-				document.getElementById("betRefereeTip").value = val.refereeTip;
-				document.getElementById("betRefereeAccepted").value = val.refereeAccepted;
-				document.getElementById("betRefereeDeadline").value = val.refereeDeadline;
-				document.getElementById("betText").value = val.betText;
+				document.getElementById("betOwnerAddress").innerHTML = val.owner;
+				document.getElementById("betOwnerAmount").innerHTML = val.ownerAmount;
+				document.getElementById("betParticipantAddress").innerHTML = val.participant;
+				document.getElementById("betParticipantAmount").innerHTML = val.participantAmount;
+				document.getElementById("betParticipantAccepted").innerHTML = val.participantAccepted;
+				document.getElementById("betRefereeAddress").innerHTML = val.referee;
+				document.getElementById("betRefereeTip").innerHTML = val.refereeTip;
+				document.getElementById("betRefereeAccepted").innerHTML = val.refereeAccepted;
+				document.getElementById("betRefereeDeadline").innerHTML = val.refereeDeadline;
+				document.getElementById("betText").innerHTML = val.betText;
 			}
 
 			if (!ethEnabled()) {
