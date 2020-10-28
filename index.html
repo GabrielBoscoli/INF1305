@@ -321,6 +321,22 @@
 				window.BetContract.methods.exceededDeadline(betId).send({from:window.coinbase});
 			}
 
+			async function getBet () {
+				var betId = document.getElementById("betIdForGetBet").value;
+				var val = window.BetContract.methods.bets(betId).call();
+				val = await val;
+				document.getElementById("betOwnerAddress").value = val.owner;
+				document.getElementById("betOwnerAmount").value = val.ownerAmount;
+				document.getElementById("betParticipantAddress").value = val.participant;
+				document.getElementById("betParticipantAmount").value = val.participantAmount;
+				document.getElementById("betParticipantAccepted").value = val.participantAccepted;
+				document.getElementById("betRefereeAddress").value = val.referee;
+				document.getElementById("betRefereeTip").value = val.refereeTip;
+				document.getElementById("betRefereeAccepted").value = val.refereeAccepted;
+				document.getElementById("betRefereeDeadline").value = val.refereeDeadline;
+				document.getElementById("betText").value = val.betText;
+			}
+
 			if (!ethEnabled()) {
 			alert("Metamask or browser with Ethereum not detected!");
 			}
@@ -394,6 +410,21 @@
 			<h1>Exceeded Deadline</h1>
 			Bet Id: <input type="text" name="betIdForExceededDeadline" id="betIdForExceededDeadline"><br><br>
 			<button id="exceededDeadline" onclick="exceededDeadline()">Exceeded Deadline</button><br>
+		</div>
+		<div>
+			<h1>Get Bet</h1>
+			Bet Id: <input type="text" name="betIdForGetBet" id="betIdForGetBet"><br><br>
+			<button id="getBet" onclick="getBet()">Get Bet</button><br>
+			Owner Address: <span id="betOwnerAddress">-</span>
+			Owner Amount: <span id="betOwnerAmount">-</span>
+			Participant Address: <span id="betParticipantAddress">-</span>
+			Participant Amount: <span id="betParticipantAmount">-</span>
+			Participant Accepted: <span id="betParticipantAccepted">-</span>
+			Referee Amount: <span id="betRefereeAmount">-</span>
+			Referee Tip: <span id="betRefereeTip">-</span>
+			Referee Accepted: <span id="betRefereeAccepted">-</span>
+			Referee Deadline: <span id="betRefereeDeadline">-</span>
+			Bet Text: <span id="betText">-</span>
 		</div>
 	</body>
 </html>
