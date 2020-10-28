@@ -250,16 +250,6 @@
 				window.coinbase = await window.web3.eth.getCoinbase();
 			};
 
-			async function getAndShowVal () {
-				var val = window.SimpleStorage.methods.get().call();
-				document.getElementById("storedData").value = await val;
-			};
-
-			async function setVal () {
-				var val = document.getElementById("storedData").value;
-				window.SimpleStorage.methods.set(val).send(val, {from:window.coinbase});
-			}
-
 			async function createBetWithParticipant () {
 				var betText = document.getElementById("betTextForCreateBetWithParticipant").value;
 				var amount = document.getElementById("amountForCreateBetWithParticipant").value;
