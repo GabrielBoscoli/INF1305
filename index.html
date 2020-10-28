@@ -267,8 +267,8 @@
 				var referee = document.getElementById("referee").value;
 				var refereeTip = document.getElementById("refereeTipForCreateBetWithParticipant").value;
 				var refereeDeadline = document.getElementById("refereeDeadlineForCreateBetWithParticipant").value;
-				var val = window.BetContract.methods.createBetWithParticipant(betText, amount, owner, participant, participantAmount, referee, refereeTip, refereeDeadline).send({from:window.coinbase, to: contract_address, value: amount});
-				document.getElementById("createdBetWithParticipantId").innerHTML = await val;
+				window.BetContract.once('BetCreated', { filter: {addr: owner}}, function(error, event){ document.getElementById("createdBetWithParticipantId").innerHTML = event.returnValues._betId;})
+				window.BetContract.methods.createBetWithParticipant(betText, amount, owner, participant, participantAmount, referee, refereeTip, refereeDeadline).send({from:window.coinbase, to: contract_address, value: amount});
 			}
 
 			async function createBet () {
@@ -279,8 +279,7 @@
 				var refereeTip = document.getElementById("refereeTipForCreateBet").value;
 				var refereeDeadline = document.getElementById("refereeDeadlineForCreateBet").value;
 				window.BetContract.once('BetCreated', { filter: {addr: owner}}, function(error, event){ document.getElementById("createdBetId").innerHTML = event.returnValues._betId;})
-				var val = window.BetContract.methods.createBet(betText, amount, owner, participantAmount, refereeTip, refereeDeadline).send({from:window.coinbase, to: contract_address, value: amount});
-				document.getElementById("createdBetId").innerHTML = await val;
+				window.BetContract.methods.createBet(betText, amount, owner, participantAmount, refereeTip, refereeDeadline).send({from:window.coinbase, to: contract_address, value: amount});
 			}
 
 			async function cancelBet () {
