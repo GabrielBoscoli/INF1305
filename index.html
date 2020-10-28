@@ -328,7 +328,7 @@
 			async function defineWinner () {
 				var betId = document.getElementById("betIdForDefineWinner").value;
 				var winner = document.getElementById("winner").value;
-				window.BetContract.methods.refereeAcceptBet(betId, winner).send({from:window.coinbase});
+				window.BetContract.methods.defineWinner(betId, winner).send({from:window.coinbase});
 			}
 
 			async function exceededDeadline () {
