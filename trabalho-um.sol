@@ -26,7 +26,7 @@ contract BetContract {
     
     mapping(uint256 => Bet) public bets;
     
-    event BetCreated(address addr, uint256 _betId);
+    event BetCreated(address indexed addr, uint256 _betId);
     
     /**
      * @dev Creates a bet with known participant and referee

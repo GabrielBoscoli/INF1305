@@ -262,8 +262,8 @@
 				var participantAmount = document.getElementById("participantAmountForCreateBet").value;
 				var refereeTip = document.getElementById("refereeTipForCreateBet").value;
 				var refereeDeadline = document.getElementById("refereeDeadlineForCreateBet").value;
-				var val = window.BetContract.methods.createBet(betText, amount, owner, participantAmount, refereeTip, refereeDeadline).send({from:window.coinbase, to: contract_address, value: amount});
 				window.BetContract.once('BetCreated', { filter: {addr: owner}}, function(error, event){ console.log(event); console.log("spius"); })
+				var val = window.BetContract.methods.createBet(betText, amount, owner, participantAmount, refereeTip, refereeDeadline).send({from:window.coinbase, to: contract_address, value: amount});
 				document.getElementById("createdBetId").innerHTML = await val;
 				console.log(val);
 			}
