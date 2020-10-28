@@ -9,7 +9,6 @@ contract BetContract {
     uint256 number;
     
     struct Bet {
-        uint256 id;
         address payable owner;
         uint256 ownerAmount;
         address payable participant;
@@ -24,7 +23,7 @@ contract BetContract {
     
     uint256 betId = 0;
     
-    mapping(uint256 => Bet) public bets;
+    mapping(uint256 => Bet) bets;
     
     event BetCreated(address indexed addr, uint256 _betId);
     
@@ -46,7 +45,7 @@ contract BetContract {
         require(_owner == msg.sender, "O endereço do criador não é válido");
         require(_owner != _participant, "O criador da aposta não pode ser também o participante");
         betId += 1;
-        bets[betId] = Bet({id: betId,
+        bets[betId] = Bet({
             ownerAmount: _amount - _refereeTip,
             owner: _owner,
             participant: _participant,
@@ -76,7 +75,7 @@ contract BetContract {
         require(_amount == msg.value, "O valor depositado não confere");
         require(_owner == msg.sender, "O endereço do criador não é válido");
         betId += 1;
-        bets[betId] = Bet({id: betId,
+        bets[betId] = Bet({
             ownerAmount: _amount - _refereeTip,
             owner: _owner,
             participant: address(0),
@@ -232,5 +231,14 @@ contract BetContract {
      */
     function checkContractBalance() external view returns (uint256){
         return address(this).balance;
+    }
+    
+    /**
+     * @dev Return data of a specific bet
+     * @return data of the bet
+     */
+    function getBet(uint256 _betId) external view returns (address, uint256, address, uint256, bool, address, uint256, bool, uint256, string memory){
+        Bet storage bet = bets[_betId];
+        return (bet.owner, bet.ownerAmount, bet.participant, bet.participantAmount, bet.participantAccepted, bet.referee, bet.refereeTip, bet.refereeAccepted, bet.refereeDeadline, bet.betText);
     }
 }
