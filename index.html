@@ -317,8 +317,7 @@
 			async function refereeAcceptBet () {
 				var betId = document.getElementById("betIdForRefereeAcceptBet").value;
 				var warranty = document.getElementById("refereeWarranty").value;
-				var amount = document.getElementById("amountForRefereeAcceptBet").value;
-				window.BetContract.methods.refereeAcceptBet(betId, warranty).send({from:window.coinbase, to: contract_address, value: amount});
+				window.BetContract.methods.refereeAcceptBet(betId, warranty).send({from:window.coinbase, to: contract_address, value: warranty});
 			}
 
 			async function refereeDeclineBet () {
@@ -411,8 +410,7 @@
 		<div>
 			<h1>Referee Accepts Bet</h1>
 			Bet Id: <input type="text" name="betIdForRefereeAcceptBet" id="betIdForRefereeAcceptBet"><br>
-			Referee Warranty: <input type="text" name="refereeWarranty" id="refereeWarranty"><br>
-			Amount: <input type="text" name="amountForRefereeAcceptBet" id="amountForRefereeAcceptBet"><br><br>
+			Referee Warranty: <input type="text" name="refereeWarranty" id="refereeWarranty"><br><br>
 			<button id="refereeAcceptBet" onclick="refereeAcceptBet()">Referee Accept Bet</button><br>
 		</div>
 		<div>
