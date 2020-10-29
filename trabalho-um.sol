@@ -119,7 +119,7 @@ contract BetContract {
         Bet storage bet = bets[_betId];
         require(msg.value == bet.participantAmount, "Valor pago não confere");
         require(msg.sender != bet.referee, "Você não pode participar da aposta pois já é o juiz dela");
-        require(bet.participant != bet.owner, "Você não pode ser o participante dessa aposta pois já é o criador dela");
+        require(msg.sender != bet.owner, "Você não pode ser o participante dessa aposta pois já é o criador dela");
         // se tiver um participante definido, ele deve ser o msg.sender
         if (bet.participant != address(0)) {
             require(bet.participant == msg.sender, "Você não é o participante dessa aposta");
