@@ -42,6 +42,7 @@ contract BetContract {
         require(_amount == msg.value, "O valor depositado não confere");
         require(_owner == msg.sender, "O endereço do criador não é válido");
         require(_owner != _participant, "O criador da aposta não pode ser também o participante");
+        require(_referee != _owner && _referee != _participant, "O juiz não pode estar envolvido na aposta");
         betId += 1;
         bets[betId] = Bet({
             ownerAmount: _amount - _refereeTip,
@@ -90,7 +91,7 @@ contract BetContract {
     }
     
     /**
-     * @dev Cancels an unaccepted bet and return money to the creator
+     * @dev Cancels an unaccepted bet and return money to the involved peers
      * @param _betId - id of the bet to be cancelled
      */
     function cancelBet(uint256 _betId) external {
@@ -117,12 +118,13 @@ contract BetContract {
     function participantAcceptBet(uint256 _betId) payable external {
         Bet storage bet = bets[_betId];
         require(msg.value == bet.participantAmount, "Valor pago não confere");
+        require(msg.sender != bet.referee, "Você não pode participar da aposta pois já é o juiz dela");
+        require(bet.participant != bet.owner, "Você não pode ser o participante dessa aposta pois já é o criador dela");
         // se tiver um participante definido, ele deve ser o msg.sender
         if (bet.participant != address(0)) {
             require(bet.participant == msg.sender, "Você não é o participante dessa aposta");
         } else {
             // se nao tiver participante definido, o msg.sender passa a ser o participante
-            require(bet.participant != bet.owner, "Você não pode ser o participante dessa aposta pois já é o criador dela");
             bet.participant = msg.sender;
         }
         bet.participantAccepted = true;
@@ -155,12 +157,12 @@ contract BetContract {
         Bet storage bet = bets[_betId];
         require(bet.ownerAmount == _refereeWarranty, "A garantia não possui o valor adequado");
         require(msg.value == _refereeWarranty, "O valor depositado não confere");
+        require(msg.sender != bet.owner && msg.sender != bet.participant, "O juiz não pode estar envolvido na aposta");
         // se tiver um juiz definido, ele deve ser o msg.sender
         if (bet.referee != address(0)) {
             require(bet.referee == msg.sender, "Você não é o juiz dessa aposta");
         } else {
             // se nao tiver juiz definido, o msg.sender passa a ser o juiz
-            require(msg.sender != bet.owner && msg.sender != bet.participant, "O juiz não pode estar envolvido na aposta");
             bet.referee = msg.sender;
         }
         bet.refereeAccepted = true;
